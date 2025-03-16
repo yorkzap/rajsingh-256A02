@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pizza Delivery System{% endblock %}</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.9"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <header class="bg-blue-800 text-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Pizza Delivery System</h1>
+            <nav>
+                {% if session.get('login') %}
+                <ul class="flex space-x-6">
+                    <li><a href="{{ url_for('index') }}" class="hover:text-blue-200">Orders</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="hover:text-blue-200">Logout ({{ session.get('login') }})</a></li>
+                </ul>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    
+    <main class="container mx-auto px-4 py-6 flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Modal container for HTMX -->
+    <div id="modal-container" class="modal-container hidden"></div>
+    <div id="modal-backdrop" class="fixed inset-0 bg-black opacity-50 z-40 hidden"></div>
+    
+    <footer class="bg-blue-800 text-white py-4 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Pizza Delivery System</p>
+        </div>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
