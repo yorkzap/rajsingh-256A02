@@ -1,0 +1,83 @@
+/* Modal */
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    max-width: 90%;
+    width: 500px;
+}
+
+.modal-container.active {
+    display: block;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+}
+
+/* Animation for modal */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translate(-50%, -60%); opacity: 0; }
+    to { transform: translate(-50%, -50%); opacity: 1; }
+}
+
+.modal-container.show {
+    animation: slideIn 0.3s ease forwards;
+}
+
+.modal-backdrop.show {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+/* HTMX animation loading states */
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+}
+.htmx-request .htmx-indicator {
+    opacity: 1
+}
+.htmx-request.htmx-indicator {
+    opacity: 1
+}
+
+/* Custom form validation styles */
+input:invalid, select:invalid {
+    border-color: #ef4444;
+}
+
+/* Custom focus styles */
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+}
+
+/* Print styles for the orders page */
+@media print {
+    header, footer, button, .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background-color: white;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: none;
+    }
+}
