@@ -6,21 +6,43 @@
     <title>{% block title %}Pizza Delivery System{% endblock %}</title>
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FC7443',
+                        primaryHover: '#ea6333',
+                        neutral: '#E6E0DA',
+                        neutralDark: '#C4BDB5',
+                        neutralLight: '#F5F2EF',
+                        dark: '#333333',
+                        light: '#FFFFFF'
+                    }
+                }
+            }
+        }
+    </script>
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.9"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
-    <header class="bg-blue-800 text-white shadow-md">
+<body class="bg-neutralLight min-h-screen flex flex-col">
+    <header class="bg-primary text-white shadow-md">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Pizza Delivery System</h1>
+            <div class="flex items-center">
+                <i class="fas fa-pizza-slice text-2xl mr-3"></i>
+                <h1 class="text-2xl font-bold">Pizza Delivery System</h1>
+            </div>
             <nav>
                 {% if session.get('login') %}
                 <ul class="flex space-x-6">
-                    <li><a href="{{ url_for('index') }}" class="hover:text-blue-200">Orders</a></li>
-                    <li><a href="{{ url_for('logout') }}" class="hover:text-blue-200">Logout ({{ session.get('login') }})</a></li>
+                    <li><a href="{{ url_for('index') }}" class="hover:text-neutral flex items-center"><i class="fas fa-list-alt mr-2"></i>Orders</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="hover:text-neutral flex items-center"><i class="fas fa-sign-out-alt mr-2"></i>Logout ({{ session.get('login') }})</a></li>
                 </ul>
                 {% endif %}
             </nav>
@@ -28,18 +50,31 @@
     </header>
     
     <main class="container mx-auto px-4 py-6 flex-grow">
+        <!-- Show the page role -->
+        <div class="mb-4">
+            <h2 class="text-xl font-semibold text-dark">
+                {% block page_role %}{% endblock %}
+            </h2>
+        </div>
+        
         {% block content %}{% endblock %}
     </main>
     
     <!-- Modal container for HTMX -->
-    <div id="modal-container" class="modal-container hidden"></div>
-    <div id="modal-backdrop" class="fixed inset-0 bg-black opacity-50 z-40 hidden"></div>
+    <div id="modal-container" class="modal-container hidden fixed inset-0 z-50 flex items-center justify-center p-4"></div>
+    <div id="modal-backdrop" class="fixed inset-0 bg-dark opacity-50 z-40 hidden"></div>
     
-    <footer class="bg-blue-800 text-white py-4 mt-auto">
-        <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2025 Pizza Delivery System</p>
+    <footer class="bg-primary text-white py-4 mt-auto">
+        <div class="container mx-auto px-4 text-center flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-2 md:mb-0">
+                <i class="fas fa-pizza-slice text-xl mr-2"></i>
+                <span class="font-semibold">Pizza Delivery System</span>
+            </div>
+            <p>&copy; 2025 All Rights Reserved</p>
         </div>
     </footer>
+    <!-- Main JS file -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     
     {% block scripts %}{% endblock %}
 </body>

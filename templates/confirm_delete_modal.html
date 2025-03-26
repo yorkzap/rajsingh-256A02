@@ -1,67 +1,75 @@
-<div class="bg-white rounded-lg shadow-lg overflow-hidden" role="dialog" aria-modal="true">
-    <div class="px-6 py-4 bg-red-600 text-white">
-        <h3 class="text-lg font-medium">Confirm Removal</h3>
+<div class="bg-white rounded-lg shadow-lg overflow-hidden max-w-md w-full" role="dialog" aria-modal="true">
+    <div class="px-6 py-4 bg-primary text-white">
+        <h3 class="text-lg font-medium flex items-center">
+            <i class="fas fa-exclamation-triangle mr-2"></i> Confirm Removal
+        </h3>
     </div>
     
     <div class="p-6">
-        <p class="text-gray-700 mb-4">Are you sure you want to remove this pizza order?</p>
+        <p class="text-dark mb-6 flex items-start">
+            <i class="fas fa-question-circle text-primary text-xl mr-3 mt-1"></i>
+            <span>Are you sure you want to remove this pizza order? This action cannot be undone.</span>
+        </p>
         
-        <div class="grid grid-cols-2 gap-4 text-gray-700 mb-6">
-            <div class="font-semibold">Type:</div>
-            <div>{{ pizza.type }}</div>
-            
-            <div class="font-semibold">Crust:</div>
-            <div>{{ pizza.crust }}</div>
-            
-            <div class="font-semibold">Size:</div>
-            <div>{{ pizza.size }}</div>
-            
-            <div class="font-semibold">Quantity:</div>
-            <div>{{ pizza.quantity }}</div>
-            
-            <div class="font-semibold">Price per:</div>
-            <div>${{ "%.2f"|format(pizza.price_per) }}</div>
-            
-            <div class="font-semibold">Date:</div>
-            <div>{{ pizza.order_date }}</div>
+        <div class="bg-neutralLight p-4 rounded-lg border border-neutral mb-6">
+            <h4 class="font-medium text-dark mb-3 border-b border-neutral pb-2">Order Details</h4>
+            <div class="grid grid-cols-2 gap-3 text-dark">
+                <div class="font-medium flex items-center">
+                    <i class="fas fa-cheese text-gray-500 mr-2"></i> Type:
+                </div>
+                <div>{{ pizza.type }}</div>
+                
+                <div class="font-medium flex items-center">
+                    <i class="fas fa-pizza-slice text-gray-500 mr-2"></i> Crust:
+                </div>
+                <div>{{ pizza.crust }}</div>
+                
+                <div class="font-medium flex items-center">
+                    <i class="fas fa-ruler text-gray-500 mr-2"></i> Size:
+                </div>
+                <div>{{ pizza.size }}</div>
+                
+                <div class="font-medium flex items-center">
+                    <i class="fas fa-sort-numeric-up text-gray-500 mr-2"></i> Quantity:
+                </div>
+                <div>{{ pizza.quantity }}</div>
+                
+                <div class="font-medium flex items-center">
+                    <i class="fas fa-tag text-gray-500 mr-2"></i> Price per:
+                </div>
+                <div>${{ "%.2f"|format(pizza.price_per) }}</div>
+                
+                <div class="font-medium flex items-center">
+                    <i class="fas fa-calendar text-gray-500 mr-2"></i> Date:
+                </div>
+                <div>{{ pizza.order_date }}</div>
+            </div>
         </div>
         
         <div class="flex justify-end space-x-4">
             <button
-                class="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                class="py-2 px-4 bg-neutralLight border border-neutral text-dark rounded-md hover:bg-neutral transition-colors duration-150 flex items-center"
                 onclick="closeModal()">
-                Go Back
+                <i class="fas fa-arrow-left mr-2"></i> Cancel
             </button>
             
             <button
-                class="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700"
-                hx-delete="{{ url_for('pizza_operations', pizza_id=pizza.id) }}"
-                hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'
+                class="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-150 flex items-center delete-button"
+                hx-delete="{{ url_for('pizza_operations', pizza_id=pizza['id']) }}"
                 hx-target="#orders-container"
-                hx-swap="innerHTML"
-                hx-trigger="click"
-                onclick="closeModal()">
-                Remove Order
+                hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'
+                hx-trigger="click">
+                <i class="fas fa-trash-alt mr-2"></i> Remove Order
             </button>
         </div>
     </div>
 </div>
-
 <script>
-    // Show the modal and backdrop
-    document.getElementById('modal-container').classList.remove('hidden');
-    document.getElementById('modal-container').classList.add('show');
-    document.getElementById('modal-backdrop').classList.remove('hidden');
-    document.getElementById('modal-backdrop').classList.add('show');
-    
-    // Close modal function
-    function closeModal() {
-        document.getElementById('modal-container').classList.add('hidden');
-        document.getElementById('modal-container').classList.remove('show');
-        document.getElementById('modal-backdrop').classList.add('hidden');
-        document.getElementById('modal-backdrop').classList.remove('show');
-    }
+    // Show the modal
+    openModal('modal-container');
     
     // Also close on backdrop click
-    document.getElementById('modal-backdrop').addEventListener('click', closeModal);
+    document.getElementById('modal-backdrop').addEventListener('click', function() {
+        closeModal('modal-container');
+    });
 </script>

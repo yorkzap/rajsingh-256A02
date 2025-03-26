@@ -1,83 +1,81 @@
-/* Modal */
+/* For the full site */
+html, body {
+    scroll-behavior: smooth;
+}
+
+/* Modal popup style */
 .modal-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 50;
-    max-width: 90%;
-    width: 500px;
+    display: none;
 }
 
-.modal-container.active {
+.modal-container.show {
+    display: flex;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+#modal-backdrop {
+    transition: opacity 0.2s ease-in-out;
+}
+
+#modal-backdrop.show {
     display: block;
+    animation: fadeIn 0.2s ease-in-out;
 }
 
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 40;
+/* Form styling */
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(252, 116, 67, 0.25);
 }
 
-/* Animation for modal */
+input.border-red-600:focus {
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
+}
+
+/* Animation */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-@keyframes slideIn {
-    from { transform: translate(-50%, -60%); opacity: 0; }
-    to { transform: translate(-50%, -50%); opacity: 1; }
+@keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-.modal-container.show {
-    animation: slideIn 0.3s ease forwards;
+/* Toast animations */
+[role="alert"] {
+    animation: slideDown 0.3s ease-out;
 }
 
-.modal-backdrop.show {
-    animation: fadeIn 0.3s ease forwards;
+.text-green-600 {
+    transition: color 0.3s ease;
 }
 
-/* HTMX animation loading states */
-.htmx-indicator {
-    opacity: 0;
-    transition: opacity 500ms ease-in;
-}
-.htmx-request .htmx-indicator {
-    opacity: 1
-}
-.htmx-request.htmx-indicator {
-    opacity: 1
+/* Button */
+button, a {
+    transition: all 0.2s ease;
 }
 
-/* Custom form validation styles */
-input:invalid, select:invalid {
-    border-color: #ef4444;
+button:active, a:active {
+    transform: scale(0.98);
 }
 
-/* Custom focus styles */
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    ring: 2px;
-    ring-color: #3b82f6;
+/* Table hover effects */
+table tr:hover {
+    background-color: rgba(230, 224, 218, 0.4);
 }
 
-/* Print styles for the orders page */
-@media print {
-    header, footer, button, .no-print {
-        display: none !important;
-    }
-    
-    body {
-        background-color: white;
-    }
-    
+/* Responsive fixes */
+@media (max-width: 640px) {
     .container {
-        width: 100%;
-        max-width: none;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    table th, table td {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
 }
