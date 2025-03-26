@@ -8,15 +8,5 @@
     "email": "customer@example.com",
     "password": "customer123",
     "role": "c"
-  },
-  {
-    "email": "new@new.com",
-    "password": "123123123",
-    "role": "c"
-  },
-  {
-    "email": "new@new1.com",
-    "password": "123123123",
-    "role": "c"
   }
 ]
