@@ -48,6 +48,11 @@ The application comes with two pre-configured user accounts:
   - Delete orders with confirmation
   - Automatic price calculations (subtotal, delivery fee, total)
 
+- **User Experience**
+  - Responsive design for mobile and desktop
+  - Real time form validation
+  - No page refreshes for common operations such as deletion using HTMX
+
 ## Tech Stack
 
 - Flask Framework
