@@ -51,9 +51,23 @@ def login():
 def create_account():
     form = CreateAccountForm()
     if form.validate_on_submit():
+        # Check if passwords match
         if form.password.data != form.confirm_password.data:
             flash('Passwords do not match', 'error')
             return render_template('create_account.html', form=form)
+            
+        # Password strength validation
+        password = form.password.data
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long', 'error')
+            return render_template('create_account.html', form=form)
+            
+        # Check for letters and numbers
+        if not any(c.isalpha() for c in password) or not any(c.isdigit() for c in password):
+            flash('Password must contain both letters and numbers', 'error')
+            return render_template('create_account.html', form=form)
+        
+        # If we get here, the password is valid
         users = load_json_file('users.json')
         users.append({
             'email': form.email.data,
@@ -63,6 +77,7 @@ def create_account():
         save_json_file(users, 'users.json')
         flash('Account created successfully! Please log in.', 'success')
         return redirect(url_for('login'))
+        
     return render_template('create_account.html', form=form)
 
 @app.route('/logout')
@@ -111,9 +126,10 @@ def pizza():
     # POST request
     if form.validate_on_submit():
         orders = load_json_file('pizzaorders.json')
-        next_id = 1 if not orders else max(order['id'] for order in orders) + 1
+        next_id = 1 if not orders else max(order.get('id', 0) for order in orders) + 1
         
-        orders.append({
+        # Create a new order dictionary without the CSRF token
+        new_order = {
             'id': next_id,
             'type': form.type.data,
             'crust': form.crust.data,
@@ -121,8 +137,9 @@ def pizza():
             'quantity': form.quantity.data,
             'price_per': form.price_per.data,
             'order_date': form.order_date.data.strftime('%Y/%m/%d')
-        })
+        }
         
+        orders.append(new_order)
         save_json_file(orders, 'pizzaorders.json')
         flash('Pizza order added successfully!', 'success')
         return redirect(url_for('index'))
@@ -136,20 +153,24 @@ def pizza_operations(pizza_id):
     
     if request.method == 'PUT':
         data = request.get_json()
+        # Filter out any CSRF token that might be in the data
+        if 'csrf_token' in data:
+            data.pop('csrf_token')
+            
         for i, order in enumerate(orders):
-            if order['id'] == pizza_id:
+            if order.get('id') == pizza_id:
                 orders[i] = data
                 break
         save_json_file(orders, 'pizzaorders.json')
         return jsonify({'status': 'success'})
     
     elif request.method == 'DELETE':
-        orders = [order for order in orders if order['id'] != pizza_id]
+        orders = [order for order in orders if order.get('id') != pizza_id]
         save_json_file(orders, 'pizzaorders.json')
         
         if request.headers.get('HX-Request'):
             flash('Pizza order removed successfully!', 'success')
-            orders.sort(key=lambda x: x['order_date'], reverse=True)
+            orders.sort(key=lambda x: x.get('order_date', ''), reverse=True)
             return render_template('orders_table.html', orders=orders)
         
         return jsonify({'status': 'success'})
@@ -158,7 +179,7 @@ def pizza_operations(pizza_id):
 @login_required
 def confirm_delete(pizza_id):
     orders = load_json_file('pizzaorders.json')
-    pizza_order = next((order for order in orders if order['id'] == pizza_id), None)
+    pizza_order = next((order for order in orders if order.get('id') == pizza_id), None)
     
     if not pizza_order:
         flash('Order not found', 'error')
@@ -166,6 +187,26 @@ def confirm_delete(pizza_id):
     
     template = 'confirm_delete_modal.html' if request.headers.get('HX-Request') else 'confirm_delete.html'
     return render_template(template, pizza=pizza_order)
+
+@app.route('/fix-orders')
+@login_required
+def fix_orders():
+    """Helper route to fix any existing orders with CSRF tokens"""
+    orders = load_json_file('pizzaorders.json')
+    fixed = False
+    
+    for order in orders:
+        if 'csrf_token' in order:
+            order.pop('csrf_token')
+            fixed = True
+            
+    if fixed:
+        save_json_file(orders, 'pizzaorders.json')
+        flash('Fixed orders with CSRF tokens', 'success')
+    else:
+        flash('No orders needed fixing', 'info')
+        
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     # Does the directory exist?
